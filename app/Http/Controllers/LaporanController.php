@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Prediksi;
 
 class LaporanController extends Controller
 {
     public function index()
     {
-        return view('laporan.index');
+        // Ambil semua data prediksi
+        $prediksi = Prediksi::all();
+
+        // Return view dengan data prediksi
+        return view('laporan.index', [
+            'prediksi' => $prediksi
+        ]);
     }
+    
 }

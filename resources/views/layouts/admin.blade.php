@@ -258,11 +258,11 @@
                         <li class="{{ Request::is('home') ? 'active' : '' }}">
                             <a href="/home"><img src="{{ asset('assets/img/icons/dashboard.svg') }}" alt="img"><span>Dashboard</span></a>
                         </li>
-                        <li class="{{ Request::is('kelolaObat') ? 'active' : '' }}">
-                            <a href="{{ route('kelolaObat') }}"><img src="{{ asset('assets/img/icons/product.svg') }}" alt="img"><span>Kelola Data Obat</span></a>
+                        <li class="{{ Request::is('obat.index') ? 'active' : '' }}">
+                            <a href="{{ route('obat.index') }}"><img src="{{ asset('assets/img/icons/product.svg') }}" alt="img"><span>Kelola Data Obat</span></a>
                         </li>
-                        <li class="{{ Request::is('prediksi') ? 'active' : '' }}">
-                            <a href="{{ route('prediksi') }}"><img src="{{ asset('assets/img/icons/scanners.svg') }}" alt="img"><span>Data Prediksi</span></a>
+                        <li class="{{ Request::is('prediksi.index') ? 'active' : '' }}">
+                            <a href="{{ route('prediksi.index') }}"><img src="{{ asset('assets/img/icons/scanners.svg') }}" alt="img"><span>Data Prediksi</span></a>
                         </li>
                         <li class="{{ Request::is('laporan') ? 'active' : '' }}">
                             <a href="{{ route('laporan') }}"><img src="{{ asset('assets/img/icons/transcation.svg') }}" alt="img"><span>Laporan</span></a>
