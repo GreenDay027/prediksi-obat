@@ -36,24 +36,24 @@ class ObatController extends Controller
                 DataObat::create($request->all());
             } elseif ($request->jenis_form == 'obat_masuk') {
                 $request->validate([
-                    'obat_id' => 'required|exists:data_obat,id',
+                    'data_obat_id' => 'required|exists:data_obat,id',
                     'jumlah' => 'required|integer|min:1',
                     'tanggal' => 'required|date',
                 ]);
 
                 $obatMasuk = ObatMasuk::create($request->all());
-                $dataObat = DataObat::find($request->obat_id);
+                $dataObat = DataObat::find($request->data_obat_id);
                 $dataObat->increment('stok_masuk', $request->jumlah);
                 $dataObat->increment('sisa', $request->jumlah);
             } elseif ($request->jenis_form == 'obat_keluar') {
                 $request->validate([
-                    'obat_id' => 'required|exists:data_obat,id',
+                    'data_obat_id' => 'required|exists:data_obat,id',
                     'jumlah' => 'required|integer|min:1',
                     'tanggal' => 'required|date',
                 ]);
 
                 $obatKeluar = ObatKeluar::create($request->all());
-                $dataObat = DataObat::find($request->obat_id);
+                $dataObat = DataObat::find($request->data_obat_id);
                 $dataObat->increment('stok_keluar', $request->jumlah);
                 $dataObat->decrement('sisa', $request->jumlah);
             }
@@ -90,13 +90,13 @@ class ObatController extends Controller
                 $dataObat->update($request->all());
             } elseif ($request->jenis_form == 'obat_masuk') {
                 $request->validate([
-                    'obat_id' => 'required|exists:data_obat,id',
+                    'data_obat_id' => 'required|exists:data_obat,id',
                     'jumlah' => 'required|integer|min:1',
                     'tanggal' => 'required|date',
                 ]);
 
                 $obatMasuk = ObatMasuk::find($id);
-                $dataObat = DataObat::find($obatMasuk->obat_id);
+                $dataObat = DataObat::find($obatMasuk->data_obat_id);
                 $dataObat->decrement('stok_masuk', $obatMasuk->jumlah);
                 $dataObat->decrement('sisa', $obatMasuk->jumlah);
                 $obatMasuk->update($request->all());
@@ -104,13 +104,13 @@ class ObatController extends Controller
                 $dataObat->increment('sisa', $request->jumlah);
             } elseif ($request->jenis_form == 'obat_keluar') {
                 $request->validate([
-                    'obat_id' => 'required|exists:data_obat,id',
+                    'data_obat_id' => 'required|exists:data_obat,id',
                     'jumlah' => 'required|integer|min:1',
                     'tanggal' => 'required|date',
                 ]);
 
                 $obatKeluar = ObatKeluar::find($id);
-                $dataObat = DataObat::find($obatKeluar->obat_id);
+                $dataObat = DataObat::find($obatKeluar->data_obat_id);
                 $dataObat->increment('stok_keluar', $obatKeluar->jumlah);
                 $dataObat->increment('sisa', $obatKeluar->jumlah);
                 $obatKeluar->update($request->all());
@@ -129,13 +129,13 @@ class ObatController extends Controller
                 DataObat::destroy($id);
             } elseif (request()->jenis_form == 'obat_masuk') {
                 $obatMasuk = ObatMasuk::find($id);
-                $dataObat = DataObat::find($obatMasuk->obat_id);
+                $dataObat = DataObat::find($obatMasuk->data_obat_id);
                 $dataObat->decrement('stok_masuk', $obatMasuk->jumlah);
                 $dataObat->decrement('sisa', $obatMasuk->jumlah);
                 $obatMasuk->delete();
             } elseif (request()->jenis_form == 'obat_keluar') {
                 $obatKeluar = ObatKeluar::find($id);
-                $dataObat = DataObat::find($obatKeluar->obat_id);
+                $dataObat = DataObat::find($obatKeluar->data_obat_id);
                 $dataObat->increment('stok_keluar', $obatKeluar->jumlah);
                 $dataObat->increment('sisa', $obatKeluar->jumlah);
                 $obatKeluar->delete();

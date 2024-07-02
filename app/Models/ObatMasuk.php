@@ -12,11 +12,11 @@ class ObatMasuk extends Model
     protected $table = "obat_masuk";
 
     protected $fillable = [
-        'obat_id', 'jumlah', 'tanggal'
+        'data_obat_id', 'jumlah', 'tanggal'
     ];
 
     public function dataObat()
     {
-        return $this->belongsTo(DataObat::class, 'obat_id', 'id');
+        return $this->belongsTo(DataObat::class, 'data_obat_id', 'id');
     }
 }

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataObat;
+use App\Models\ObatKeluar;
+use App\Models\ObatMasuk;
+use App\Models\Prediksi;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $dataObatCount = DataObat::count();
+        $dataObatMasukCount = ObatMasuk::count();
+        $dataObatKeluarCount = ObatKeluar::count();
+        $dataPrediksiCount = Prediksi::count();
+        return view('home', compact('dataObatCount', 'dataObatMasukCount', 'dataObatKeluarCount', 'dataPrediksiCount'));
     }
 }

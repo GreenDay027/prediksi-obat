@@ -196,10 +196,10 @@
                                         @method('PUT')
                                         <input type="hidden" name="jenis_form" value="obat_masuk">
                                         <div class="mb-3">
-                                            <label for="obat_id" class="form-label">Nama Obat</label>
-                                            <select class="form-control" id="obat_id" name="obat_id">
+                                            <label for="data_obat_id" class="form-label">Nama Obat</label>
+                                            <select class="form-control" id="data_obat_id" name="data_obat_id">
                                                 @foreach($dataObat as $obat)
-                                                    <option value="{{ $obat->id }}" {{ $obat->id == $obatMasuk->obat_id ? 'selected' : '' }}>{{ $obat->nama_obat }}</option>
+                                                    <option value="{{ $obat->id }}" {{ $obat->id == $obatMasuk->data_obat_id ? 'selected' : '' }}>{{ $obat->nama_obat }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -234,8 +234,8 @@
                                 @csrf
                                 <input type="hidden" name="jenis_form" value="obat_masuk">
                                 <div class="mb-3">
-                                    <label for="obat_id" class="form-label">Nama Obat</label>
-                                    <select class="form-control" id="obat_id" name="obat_id">
+                                    <label for="data_obat_id" class="form-label">Nama Obat</label>
+                                    <select class="form-control" id="data_obat_id" name="data_obat_id">
                                         @foreach($dataObat as $obat)
                                             <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
                                         @endforeach
@@ -309,10 +309,10 @@
                                         @method('PUT')
                                         <input type="hidden" name="jenis_form" value="obat_keluar">
                                         <div class="mb-3">
-                                            <label for="obat_id" class="form-label">Nama Obat</label>
-                                            <select class="form-control" id="obat_id" name="obat_id">
+                                            <label for="data_obat_id" class="form-label">Nama Obat</label>
+                                            <select class="form-control" id="data_obat_id" name="data_obat_id">
                                                 @foreach($dataObat as $obat)
-                                                    <option value="{{ $obat->id }}" {{ $obat->id == $obatKeluar->obat_id ? 'selected' : '' }}>{{ $obat->nama_obat }}</option>
+                                                    <option value="{{ $obat->id }}" {{ $obat->id == $obatKeluar->data_obat_id ? 'selected' : '' }}>{{ $obat->nama_obat }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -347,8 +347,8 @@
                                 @csrf
                                 <input type="hidden" name="jenis_form" value="obat_keluar">
                                 <div class="mb-3">
-                                    <label for="obat_id" class="form-label">Nama Obat</label>
-                                    <select class="form-control" id="obat_id" name="obat_id">
+                                    <label for="data_obat_id" class="form-label">Nama Obat</label>
+                                    <select class="form-control" id="data_obat_id" name="data_obat_id">
                                         @foreach($dataObat as $obat)
                                             <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
                                         @endforeach

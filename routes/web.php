@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Auth::routes();
@@ -30,10 +30,11 @@ Auth::routes();
 Route::middleware('auth')->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    
+
     Route::resource('obat', ObatController::class);
     Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi.index');
-Route::post('/prediksi', [PrediksiController::class, 'predict'])->name('prediksi.predict');
+    Route::post('/prediksi', [PrediksiController::class, 'predict'])->name('prediksi.predict');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
-
+    Route::post('/save', [PrediksiController::class, 'savePrediction'])->name('save');
+    Route::get('/download_pdf', [LaporanController::class, 'downloadPDF'])->name('download_pdf');
 });

@@ -13,109 +13,89 @@ class PrediksiController extends Controller
 {
     public function index()
     {
-        $dataObats = DataObat::all();
-        return view('prediksi.index', compact('dataObats'));
+        $dataObat = DataObat::all();
+        return view('prediksi.index', compact('dataObat'));
     }
     public function predict(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'data_obat_id' => 'required|exists:data_obat,id',
-            'tahun' => 'required|integer|min:2020|max:2030',
-        ]);
+        $obatId = $request->input('obat_id');
+        $bulan = $request->input('bulan');
+        $alpha = 0.2;
 
-        // Ambil data obat berdasarkan ID
-        $dataObat = DataObat::find($validated['data_obat_id']);
-        if (!$dataObat) {
-            return redirect()->back()->with('error', 'Data obat tidak ditemukan.');
+        $obat = DataObat::find($obatId);
+        $dataKeluar = $obat->obatKeluar()->orderBy('tanggal', 'asc')->get();
+
+        // Mengambil data aktual
+        $dataAktual = $dataKeluar->pluck('jumlah')->toArray();
+        $n = count($dataAktual);
+
+        // Inisialisasi nilai awal
+        $St1 = $dataAktual[0];
+        $St2 = $St1;
+        $St3 = $St1;
+
+        $St1s = [$St1];
+        $St2s = [$St2];
+        $St3s = [$St3];
+
+        $ats = [];
+        $bts = [];
+        $cts = [];
+
+        // Melakukan perhitungan untuk tiap periode
+        for ($i = 1; $i < $n; $i++) {
+            $St1 = $alpha * $dataAktual[$i] + (1 - $alpha) * $St1;
+            $St2 = $alpha * $St1 + (1 - $alpha) * $St2;
+            $St3 = $alpha * $St2 + (1 - $alpha) * $St3;
+
+            $St1s[] = $St1;
+            $St2s[] = $St2;
+            $St3s[] = $St3;
+
+            $aT = 3 * $St1 - 3 * $St2 + $St3;
+            $bT = ($alpha / (2 * (1 - $alpha) * (1 - $alpha))) * ((6 - 5 * $alpha) * $St1 - (10 - 8 * $alpha) * $St2 + (4 - 3 * $alpha) * $St3);
+            $cT = ($alpha * $alpha / ((1 - $alpha) * (1 - $alpha))) * ($St1 - 2 * $St2 + $St3);
+
+            $ats[] = $aT;
+            $bts[] = $bT;
+            $cts[] = $cT;
         }
 
-        // Nilai alpha untuk peramalan eksponensial
-        $alpha = 0.5;
+        // Membuat prediksi untuk beberapa bulan ke depan
+        $predictions = [];
+        $lastDate = \Carbon\Carbon::parse($dataKeluar->last()->tanggal);
+        $startMonth = $lastDate->copy()->addMonth();
 
-        // Ambil data stok keluar obat berdasarkan obat_id dan tahun
-        $dataStok = ObatKeluar::selectRaw('MONTH(tanggal) as bulan, SUM(jumlah) as total')
-            ->where('obat_id', $validated['data_obat_id'])
-            ->whereYear('tanggal', $validated['tahun'])
-            ->groupBy('bulan')
-            ->orderBy('bulan')
-            ->get();
-        
-        // Inisialisasi variabel untuk perhitungan eksponensial smoothing
-        $s1 = 0;
-        $s2 = 0;
-        $s3 = 0;
-        $prediksi = [];
-        $totalPrediksiTahun = 0;
-
-        foreach ($dataStok as $index => $data) {
-           
-            $bulan = $data->bulan;
-
-            if ($index == 0) {
-                // Inisialisasi nilai awal
-                $s1 = $data->total;
-                $s2 = $s1;
-                $s3 = $s1;
-            } else {
-                // Perhitungan eksponensial smoothing
-                $s1_new = $alpha * $data->total + (1 - $alpha) * $s1;
-                $s2_new = $alpha * $s1_new + (1 - $alpha) * $s2;
-                $s3_new = $alpha * $s2_new + (1 - $alpha) * $s3;
-
-                // Perhitungan komponen at, bt, ct
-                $at = 3 * $s1_new - 3 * $s2_new + $s3_new;
-                $bt = ($alpha / (2 * pow((1 - $alpha), 2))) * ((6 - 5 * $alpha) * $s1_new - (10 - 8 * $alpha) * $s2_new + (4 - 3 * $alpha) * $s3_new);
-                $ct = (pow($alpha, 2) / pow((1 - $alpha), 2)) * ($s1_new - 2 * $s2_new + $s3_new);
-
-                // Simpan hasil prediksi dalam array
-                $prediksi[] = [
-                    'data_obat_id' => $validated['data_obat_id'],
-                    'nama_obat' => $dataObat->nama_obat,
-                    'bulan' => $bulan,
-                    'tahun' => $validated['tahun'] + 1,
-                    's1' => $s1,
-                    's2' => $s2,
-                    's3' => $s3,
-                    'at' => $at,
-                    'bt' => $bt,
-                    'ct' => $ct,
-                    'prediksi' => $at + $bt * ($index + 1) + 0.5 * $ct * pow(($index + 1), 2)
-                ];
-
-                // Update total prediksi tahunan
-                $totalPrediksiTahun += $at + $bt * ($index + 1) + 0.5 * $ct * pow(($index + 1), 2);
-
-                // Update nilai s1, s2, s3 untuk iterasi selanjutnya
-                $s1 = $s1_new;
-                $s2 = $s2_new;
-                $s3 = $s3_new;
-            }
+        for ($m = 1; $m <= $bulan; $m++) {
+            $ftm = $aT + $bT * $m + 0.5 * $cT * $m * $m;
+            $predictions[] = [
+                'date' => $startMonth->copy()->addMonths($m - 1)->format('M-Y'),
+                'value' => round($ftm) 
+            ];
         }
 
-        // dd($prediksi);
-       
-        // Simpan total prediksi tahunan ke dalam array prediksi
-        $prediksiPerTahun[] = [
-            'nama_obat' => $dataObat->nama_obat,
-            'bulan' => 'Total',
-            'tahun' => $validated['tahun'] + 1,
-            'total_prediksi' => $totalPrediksiTahun,
-        ];
-
-        foreach ($prediksi as $dataPrediksi) {
-            Prediksi::create($dataPrediksi);
-        }
-        // dd($prediksiPerTahun);
-        
-        // Return view dengan data prediksi
-        return view('prediksi.index', [
-            'dataObats' => DataObat::all(),
-            'prediksi' => $prediksi,
-            'prediksiPerTahun' => $prediksiPerTahun,
-            'validated' => $validated
-        ])->with('success', 'Prediksi berhasil dihitung.');
+        $dataObat = DataObat::all();
+        return view('prediksi.index', compact('obat', 'predictions', 'dataObat', 'St1s', 'St2s', 'St3s', 'ats', 'bts', 'cts'));
     }
+
+    public function savePrediction(Request $request)
+    {
+        $predictions = json_decode($request->input('predictions'), true);
+        $namaObat = $request->input('nama_obat');
+
+
+        foreach ($predictions as $prediction) {
+            Prediksi::create([
+                'nama_obat' => $namaObat,
+                'bulan_tahun' => $prediction['date'],
+                'hasil_prediksi' => $prediction['value']
+            ]);
+        }
+
+        return redirect()->route('prediksi.index')->with('success', 'Hasil prediksi berhasil disimpan.');
+    }
+
+
 }
 
 

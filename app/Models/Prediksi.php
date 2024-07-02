@@ -11,16 +11,9 @@ class Prediksi extends Model
 
     protected $table = 'prediksi';
     protected $fillable = [
-        'data_obat_id',
-        'bulan',
-        'tahun',
-        's1',
-        's2',
-        's3',
-        'at',
-        'bt',
-        'ct',
-        'prediksi',
+        'nama_obat',
+        'bulan_tahun',
+        'hasil_prediksi'
     ];
 
     public function dataObat()

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('obat_masuk', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('obat_id')->constrained('data_obat')->onDelete('cascade');
+            $table->foreignId('data_obat_id')->constrained('data_obat')->onDelete('cascade');
             $table->integer('jumlah');
             $table->date('tanggal');
             $table->timestamps();

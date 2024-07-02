@@ -13,16 +13,9 @@ return new class extends Migration
     {
         Schema::create('prediksi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('data_obat_id')->constrained('data_obat');
-            $table->integer('bulan');
-            $table->integer('tahun');
-            $table->double('s1');
-            $table->double('s2');
-            $table->double('s3');
-            $table->double('at');
-            $table->double('bt');
-            $table->double('ct');
-            $table->double('prediksi');
+            $table->string('nama_obat');
+            $table->string('bulan_tahun'); // Menggunakan string untuk menyimpan bulan dan tahun
+            $table->double('hasil_prediksi');
             $table->timestamps();
         });
     }
