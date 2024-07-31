@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_obat');
             $table->string('jenis');
-            $table->enum('satuan', ['botol', 'kapsul', 'tablet']);
+            $table->enum('satuan', ['Botol', 'Kapsul', 'Tablet', 'Sachet']);
             $table->integer('stok_masuk')->default(0);
             $table->integer('stok_keluar')->default(0);
             $table->integer('sisa')->default(0);

@@ -23,12 +23,13 @@
             </div>
             <div class="card shadow border-0 mt-3">
                 <div class="card-body">
-                    <table class="table mt-3">
+                    <table class=" mt-3" id="myTable">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Nama Obat</th>
                                 <th>Jenis</th>
+                                <th>Kadaluarsa</th>
                                 <th>Satuan</th>
                                 <th>Stok Masuk</th>
                                 <th>Stok Keluar</th>
@@ -39,9 +40,10 @@
                         <tbody>
                             @foreach($dataObat as $obat)
                             <tr>
-                                <td>{{ $obat->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $obat->nama_obat }}</td>
                                 <td>{{ $obat->jenis }}</td>
+                                <td>{{ $obat->kadaluarsa }}</td>
                                 <td>{{ $obat->satuan }}</td>
                                 <td>{{ $obat->stok_masuk }}</td>
                                 <td>{{ $obat->stok_keluar }}</td>
@@ -81,11 +83,16 @@
                                                     <input type="text" class="form-control" id="jenis" name="jenis" value="{{ $obat->jenis }}">
                                                 </div>
                                                 <div class="mb-3">
+                                                    <label for="kadaluarsa" class="form-label">kadaluarsa</label>
+                                                    <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa" value="{{ $obat->jenis }}">
+                                                </div>
+                                                <div class="mb-3">
                                                     <label for="satuan" class="form-label">Satuan</label>
                                                     <select class="form-control" id="satuan" name="satuan">
                                                         <option value="botol" {{ $obat->satuan == 'botol' ? 'selected' : '' }}>Botol</option>
                                                         <option value="kapsul" {{ $obat->satuan == 'kapsul' ? 'selected' : '' }}>Kapsul</option>
-                                                        <option value="tablet" {{ $obat->satuan == 'tablet' ? 'selected' : '' }}>Tablet</option>
+                                                        <option value="tablet" {{ $obat->satuan == 'tablet' ? 'selected' : '' }}>Tablet</option>                                                        <option value="tablet" {{ $obat->satuan == 'tablet' ? 'selected' : '' }}>Tablet</option>
+                                                        <option value="sachet" {{ $obat->satuan == 'sachet' ? 'selected' : '' }}>Sachet</option>
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
@@ -125,11 +132,16 @@
                                     <input type="text" class="form-control" id="jenis" name="jenis">
                                 </div>
                                 <div class="mb-3">
+                                    <label for="kadaluarsa" class="form-label">kadaluarsa</label>
+                                    <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa">
+                                </div>
+                                <div class="mb-3">
                                     <label for="satuan" class="form-label">Satuan</label>
                                     <select class="form-control" id="satuan" name="satuan">
                                         <option value="botol">Botol</option>
                                         <option value="kapsul">Kapsul</option>
                                         <option value="tablet">Tablet</option>
+                                        <option value="sachet">Sachet</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -152,75 +164,82 @@
                     <i class="fas fa-plus"></i> Tambah
                 </button>
             </div>
-            <table class="table mt-3">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama Obat</th>
-                        <th>Jumlah</th>
-                        <th>Tanggal</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($dataObatMasuk as $obatMasuk)
-                    <tr>
-                        <td>{{ $obatMasuk->id }}</td>
-                        <td>{{ $obatMasuk->dataObat->nama_obat }}</td>
-                        <td>{{ $obatMasuk->jumlah }}</td>
-                        <td>{{ $obatMasuk->tanggal }}</td>
-                        <td>
-                            <div class="d-flex gap-1">
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditObatMasuk{{ $obatMasuk->id }}"><i class="fas fa-edit"></i></button>
-                                <form action="{{ route('obat.destroy', $obatMasuk->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="hidden" name="jenis_form" value="obat_masuk">
-                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Modal Edit Obat Masuk -->
-                    <div class="modal fade" id="modalEditObatMasuk{{ $obatMasuk->id }}" tabindex="-1" aria-labelledby="modalEditObatMasukLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalEditObatMasukLabel">Edit Obat Masuk</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="card shadow border-0 mt-3">
+                     <div class="card-body">
+                    <table class="datatable mt-3">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama Obat</th>
+                                <th>Kadaluarsa</th>
+                                <th>Jumlah</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($dataObatMasuk as $obatMasuk)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $obatMasuk->dataObat->nama_obat }}</td>
+                                <td>{{ $obatMasuk->kadaluarsa }}</td>
+                                <td>{{ $obatMasuk->jumlah }}</td>
+                                <td>{{ $obatMasuk->tanggal }}</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditObatMasuk{{ $obatMasuk->id }}"><i class="fas fa-edit"></i></button>
+                                        <form action="{{ route('obat.destroy', $obatMasuk->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="jenis_form" value="obat_masuk">
+                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+        
+                            <!-- Modal Edit Obat Masuk -->
+                            <div class="modal fade" id="modalEditObatMasuk{{ $obatMasuk->id }}" tabindex="-1" aria-labelledby="modalEditObatMasukLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalEditObatMasukLabel">Edit Obat Masuk</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('obat.update', $obatMasuk->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="jenis_form" value="obat_masuk">
+                                                <div class="mb-3">
+                                                    <label for="data_obat_id" class="form-label">Nama Obat</label>
+                                                        <label for="data_obat_id" class="form-label">Nama Obat</label>
+                                                        <input type="text" class="form-control" readonly name="data_obat_id" id="" value="{{ $obat->nama_obat}}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="kadaluarsa" class="form-label">kadaluarsa</label>
+                                                    <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa" value="{{ $obat->jenis }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="jumlah" class="form-label">Jumlah</label>
+                                                    <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ $obatMasuk->jumlah }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="tanggal" class="form-label">Tanggal</label>
+                                                    <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ $obatMasuk->tanggal }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <form action="{{ route('obat.update', $obatMasuk->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <input type="hidden" name="jenis_form" value="obat_masuk">
-                                        <div class="mb-3">
-                                            <label for="data_obat_id" class="form-label">Nama Obat</label>
-                                            <select class="form-control" id="data_obat_id" name="data_obat_id">
-                                                @foreach($dataObat as $obat)
-                                                    <option value="{{ $obat->id }}" {{ $obat->id == $obatMasuk->data_obat_id ? 'selected' : '' }}>{{ $obat->nama_obat }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="jumlah" class="form-label">Jumlah</label>
-                                            <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ $obatMasuk->jumlah }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="tanggal" class="form-label">Tanggal</label>
-                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ $obatMasuk->tanggal }}">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Simpan</button>
-                                    </form>
-                                </div>
                             </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </tbody>
-            </table>
+                            @endforeach
+                        </tbody>
+                    </table>
 
+                </div>
+                </div>
             <!-- Modal Tambah Obat Masuk -->
             <div class="modal fade" id="modalTambahObatMasuk" tabindex="-1" aria-labelledby="modalTambahObatMasukLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -240,6 +259,10 @@
                                             <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="kadaluarsa" class="form-label">kadaluarsa</label>
+                                    <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa">
                                 </div>
                                 <div class="mb-3">
                                     <label for="jumlah" class="form-label">Jumlah</label>
@@ -265,74 +288,74 @@
                     <i class="fas fa-plus"></i> Tambah
                 </button>
             </div>
-            <table class="table mt-3">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama Obat</th>
-                        <th>Jumlah</th>
-                        <th>Tanggal</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($dataObatKeluar as $obatKeluar)
-                    <tr>
-                        <td>{{ $obatKeluar->id }}</td>
-                        <td>{{ $obatKeluar->dataObat->nama_obat }}</td>
-                        <td>{{ $obatKeluar->jumlah }}</td>
-                        <td>{{ $obatKeluar->tanggal }}</td>
-                        <td>
-                            <div class="d-flex gap-1">
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditObatKeluar{{ $obatKeluar->id }}"><i class="fas fa-edit"></i></button>
-                                <form action="{{ route('obat.destroy', $obatKeluar->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="hidden" name="jenis_form" value="obat_keluar">
-                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Modal Edit Obat Keluar -->
-                    <div class="modal fade" id="modalEditObatKeluar{{ $obatKeluar->id }}" tabindex="-1" aria-labelledby="modalEditObatKeluarLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalEditObatKeluarLabel">Edit Obat Keluar</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="{{ route('obat.update', $obatKeluar->id) }}" method="POST">
+           <div class="card shadow border-0 mt-3">
+            <div class="card-body">
+                <table class="datatable mt-3 ">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Obat</th>
+                            <th>Jumlah</th>
+                            <th>Tanggal</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($dataObatKeluar as $obatKeluar)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $obatKeluar->dataObat->nama_obat }}</td>
+                            <td>{{ $obatKeluar->jumlah }}</td>
+                            <td>{{ $obatKeluar->tanggal }}</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditObatKeluar{{ $obatKeluar->id }}"><i class="fas fa-edit"></i></button>
+                                    <form action="{{ route('obat.destroy', $obatKeluar->id) }}" method="POST">
                                         @csrf
-                                        @method('PUT')
+                                        @method('DELETE')
                                         <input type="hidden" name="jenis_form" value="obat_keluar">
-                                        <div class="mb-3">
-                                            <label for="data_obat_id" class="form-label">Nama Obat</label>
-                                            <select class="form-control" id="data_obat_id" name="data_obat_id">
-                                                @foreach($dataObat as $obat)
-                                                    <option value="{{ $obat->id }}" {{ $obat->id == $obatKeluar->data_obat_id ? 'selected' : '' }}>{{ $obat->nama_obat }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="jumlah" class="form-label">Jumlah</label>
-                                            <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ $obatKeluar->jumlah }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="tanggal" class="form-label">Tanggal</label>
-                                            <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ $obatKeluar->tanggal }}">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
                                     </form>
+                                </div>
+                            </td>
+                        </tr>
+    
+                        <!-- Modal Edit Obat Keluar -->
+                        <div class="modal fade" id="modalEditObatKeluar{{ $obatKeluar->id }}" tabindex="-1" aria-labelledby="modalEditObatKeluarLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalEditObatKeluarLabel">Edit Obat Keluar</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('obat.update', $obatKeluar->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="jenis_form" value="obat_keluar">
+                                            <div class="mb-3">
+                                                <label for="data_obat_id" class="form-label">Nama Obat</label>
+                                                <input type="text" class="form-control" readonly name="data_obat_id" id="" value="{{ $obat->nama_obat}}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="jumlah" class="form-label">Jumlah</label>
+                                                <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ $obatKeluar->jumlah }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tanggal" class="form-label">Tanggal</label>
+                                                <input type="date" class="form-control" id="tanggal" name="tanggal" value="{{ $obatKeluar->tanggal }}">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @endforeach
-                </tbody>
-            </table>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+           </div>
 
             <!-- Modal Tambah Obat Keluar -->
             <div class="modal fade" id="modalTambahObatKeluar" tabindex="-1" aria-labelledby="modalTambahObatKeluarLabel" aria-hidden="true">

@@ -42,6 +42,10 @@ class PrediksiController extends Controller
         $bts = [];
         $cts = [];
 
+        $aT = 0;
+        $bT = 0;
+        $cT = 0;
+
         // Melakukan perhitungan untuk tiap periode
         for ($i = 1; $i < $n; $i++) {
             $St1 = $alpha * $dataAktual[$i] + (1 - $alpha) * $St1;
@@ -64,19 +68,21 @@ class PrediksiController extends Controller
         // Membuat prediksi untuk beberapa bulan ke depan
         $predictions = [];
         $lastDate = \Carbon\Carbon::parse($dataKeluar->last()->tanggal);
-        $startMonth = $lastDate->copy()->addMonth();
+        $startMonth = $lastDate->copy()->startOfMonth()->addMonthNoOverflow();
 
-        for ($m = 1; $m <= $bulan; $m++) {
-            $ftm = $aT + $bT * $m + 0.5 * $cT * $m * $m;
+        for ($m = 0; $m < $bulan; $m++) {
+            $ftm = $aT + $bT * ($m + 1) + 0.5 * $cT * ($m + 1) * ($m + 1);
             $predictions[] = [
-                'date' => $startMonth->copy()->addMonths($m - 1)->format('M-Y'),
-                'value' => round($ftm) 
+                'date' => $startMonth->copy()->addMonths($m)->format('M-Y'),
+                'value' => round($ftm)
             ];
         }
 
         $dataObat = DataObat::all();
-        return view('prediksi.index', compact('obat', 'predictions', 'dataObat', 'St1s', 'St2s', 'St3s', 'ats', 'bts', 'cts'));
+        $namaObatFix = $obat->nama_obat;
+        return view('prediksi.index', compact('namaObatFix','obat', 'predictions', 'dataObat', 'St1s', 'St2s', 'St3s', 'ats', 'bts', 'cts'));
     }
+
 
     public function savePrediction(Request $request)
     {
@@ -94,8 +100,10 @@ class PrediksiController extends Controller
 
         return redirect()->route('prediksi.index')->with('success', 'Hasil prediksi berhasil disimpan.');
     }
+    public function getBulanTahunAttribute($value)
+    {
+        return \Carbon\Carbon::createFromFormat('M-Y', $value);
+    }
 
 
 }
-
-

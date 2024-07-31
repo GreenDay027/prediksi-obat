@@ -29,7 +29,7 @@ class ObatController extends Controller
                 $request->validate([
                     'nama_obat' => 'required|string|max:255',
                     'jenis' => 'required|string|max:255',
-                    'satuan' => 'required|in:botol,kapsul,tablet',
+                    'satuan' => 'required|in:botol,kapsul,tablet,sachet',
                     'periode' => 'required|string|max:4',
                 ]);
 
@@ -39,6 +39,7 @@ class ObatController extends Controller
                     'data_obat_id' => 'required|exists:data_obat,id',
                     'jumlah' => 'required|integer|min:1',
                     'tanggal' => 'required|date',
+                    'kadaluarsa' => 'required|date',
                 ]);
 
                 $obatMasuk = ObatMasuk::create($request->all());
@@ -67,9 +68,6 @@ class ObatController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
@@ -77,17 +75,39 @@ class ObatController extends Controller
 
     public function update(Request $request, $id)
     {
+
         if ($request->has('jenis_form')) {
             if ($request->jenis_form == 'data_obat') {
                 $request->validate([
                     'nama_obat' => 'required|string|max:255',
                     'jenis' => 'required|string|max:255',
-                    'satuan' => 'required|in:botol,kapsul,tablet',
+                    'satuan' => 'required|in:botol,kapsul,tablet,sachet',
                     'periode' => 'required|string|max:4',
                 ]);
 
                 $dataObat = DataObat::find($id);
+                $oldJenis = $dataObat->jenis;
+
+                // Update DataObat
                 $dataObat->update($request->all());
+
+                // Handle changes for `stok_keluar` from the old type to the new type
+                if ($dataObat->jenis !== $oldJenis) {
+                    $obatKeluars = ObatKeluar::where('data_obat_id', $id)->get();
+                    foreach ($obatKeluars as $obatKeluar) {
+                        $dataObatLama = DataObat::where('jenis', $oldJenis)->first();
+                        if ($dataObatLama) {
+                            $dataObatLama->decrement('stok_keluar', $obatKeluar->jumlah);
+                            $dataObatLama->increment('sisa', $obatKeluar->jumlah);
+                        }
+
+                        $dataObatBaru = DataObat::where('jenis', $dataObat->jenis)->first();
+                        if ($dataObatBaru) {
+                            $dataObatBaru->increment('stok_keluar', $obatKeluar->jumlah);
+                            $dataObatBaru->decrement('sisa', $obatKeluar->jumlah);
+                        }
+                    }
+                }
             } elseif ($request->jenis_form == 'obat_masuk') {
                 $request->validate([
                     'data_obat_id' => 'required|exists:data_obat,id',
@@ -111,7 +131,7 @@ class ObatController extends Controller
 
                 $obatKeluar = ObatKeluar::find($id);
                 $dataObat = DataObat::find($obatKeluar->data_obat_id);
-                $dataObat->increment('stok_keluar', $obatKeluar->jumlah);
+                $dataObat->decrement('stok_keluar', $obatKeluar->jumlah);
                 $dataObat->increment('sisa', $obatKeluar->jumlah);
                 $obatKeluar->update($request->all());
                 $dataObat->increment('stok_keluar', $request->jumlah);
@@ -136,7 +156,7 @@ class ObatController extends Controller
             } elseif (request()->jenis_form == 'obat_keluar') {
                 $obatKeluar = ObatKeluar::find($id);
                 $dataObat = DataObat::find($obatKeluar->data_obat_id);
-                $dataObat->increment('stok_keluar', $obatKeluar->jumlah);
+                $dataObat->decrement('stok_keluar', $obatKeluar->jumlah);
                 $dataObat->increment('sisa', $obatKeluar->jumlah);
                 $obatKeluar->delete();
             }

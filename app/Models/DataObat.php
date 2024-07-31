@@ -12,7 +12,7 @@ class DataObat extends Model
     protected $table = 'data_obat';
     
     protected $fillable = [
-        'nama_obat', 'jenis', 'satuan', 'periode', 'stok_masuk', 'stok_keluar', 'sisa'
+        'nama_obat', 'jenis', 'satuan', 'periode', 'stok_masuk', 'stok_keluar', 'sisa','tanggal_kadaluarsa',
     ];
 
     public function obatMasuk()
@@ -23,5 +23,11 @@ class DataObat extends Model
     public function obatKeluar()
     {
         return $this->hasMany(ObatKeluar::class);
+    }
+
+    // Mendapatkan kadaluarsa terbaru dari obat masuk
+    public function getKadaluarsaAttribute()
+    {
+        return $this->obatMasuk()->latest('kadaluarsa')->value('kadaluarsa');
     }
 }

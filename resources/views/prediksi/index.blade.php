@@ -19,41 +19,42 @@
         </div>
         <button type="submit" class="btn btn-primary">Prediksi</button>
     </form>
-
     @if(isset($predictions))
         <div class="mt-4">
-            <h3>Hasil Prediksi untuk {{ $obat->nama_obat }}</h3>
-          <div class="card shadow border-0">
-            <div class="card-body">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Bulan</th>
-                    <th>Prediksi Pemakaian (Ft+m)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($predictions as $prediction)
-                    <tr>
-                      <td>{{ $prediction['date'] }}</td>
-                      <td>{{ $prediction['value'] }}</td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
+            <h3>Hasil Prediksi untuk {{ $namaObatFix }}</h3>
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Bulan</th>
+                                <th>Prediksi Pemakaian (Ft+m)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($predictions as $prediction)
+                                <tr>
+                                    <td>{{ $prediction['date'] }}</td>
+                                    <td>{{ $prediction['value'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
 
-          <form action="{{ route('save') }}" method="POST">
-            @csrf
-            <input type="hidden" name="nama_obat" value="{{ $obat->nama_obat }}">
-            <input type="hidden" name="predictions" value="{{ json_encode($predictions) }}">
-            <button type="submit" class="btn btn-primary mt-3">
-                <i class="fas fa-save"></i> Simpan Perhitungan
-            </button>
-        </form>
+            <form action="{{ route('save') }}" method="POST">
+                @csrf
+                <input type="hidden" name="nama_obat" value="{{ $namaObatFix }}">
+                <input type="hidden" name="predictions" value="{{ json_encode($predictions) }}">
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-save"></i> Simpan Perhitungan
+                </button>
+            </form>
 
-            {{-- <h3>Nilai Perhitungan</h3>
+            <h3>Nilai Perhitungan</h3>
+            <div class="card shadow border-0">
+              <div class="card-body">
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -79,7 +80,7 @@
                         </tr>
                     @endfor
                 </tbody>
-            </table> --}}
+            </table>
         </div>
     @endif
 </div>

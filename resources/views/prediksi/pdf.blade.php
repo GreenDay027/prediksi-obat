@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +21,9 @@
         th {
             background-color: #f2f2f2;
         }
+        .text-center {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -41,28 +44,32 @@
             </thead>
             <tbody>
                 @foreach ($prediksis as $namaObat => $prediksiObat)
-                    <tr>
-                        <td>{{ $namaObat }}</td>
-                        <td>2024</td>
-                        @for ($month = 1; $month <= 12; $month++)
-                            <td>
-                                @php
-                                    $found = false;
-                                    foreach ($prediksiObat as $prediksi) {
-                                        if (\Carbon\Carbon::parse($prediksi->bulan_tahun)->format('Y') == 2024 &&
-                                            \Carbon\Carbon::parse($prediksi->bulan_tahun)->format('m') == str_pad($month, 2, '0', STR_PAD_LEFT)) {
-                                            echo $prediksi->hasil_prediksi;
-                                            $found = true;
-                                            break;
+                    @foreach ($years as $year)
+                        <tr>
+                            <td>{{ $namaObat }}</td>
+                            <td>{{ $year }}</td>
+                            @for ($month = 1; $month <= 12; $month++)
+                                <td>
+                                    @php
+                                        $found = false;
+                                        if (isset($prediksisPerYear[$namaObat][$year])) {
+                                            foreach ($prediksisPerYear[$namaObat][$year] as $prediksi) {
+                                                $prediksiMonth = \Carbon\Carbon::createFromFormat('M-Y', $prediksi->bulan_tahun)->format('m');
+                                                if ($prediksiMonth == str_pad($month, 2, '0', STR_PAD_LEFT)) {
+                                                    echo $prediksi->hasil_prediksi;
+                                                    $found = true;
+                                                    break;
+                                                }
+                                            }
                                         }
-                                    }
-                                    if (!$found) {
-                                        echo '-';
-                                    }
-                                @endphp
-                            </td>
-                        @endfor
-                    </tr>
+                                        if (!$found) {
+                                            echo '-';
+                                        }
+                                    @endphp
+                                </td>
+                            @endfor
+                        </tr>
+                    @endforeach
                 @endforeach
             </tbody>
         </table>

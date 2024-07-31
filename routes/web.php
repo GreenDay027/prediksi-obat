@@ -9,6 +9,7 @@ use App\Http\Controllers\ObatMasukController;
 use App\Http\Controllers\PrediksiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PrediksiHistorisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,5 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/prediksi', [PrediksiController::class, 'predict'])->name('prediksi.predict');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     Route::post('/save', [PrediksiController::class, 'savePrediction'])->name('save');
-    Route::get('/download_pdf', [LaporanController::class, 'downloadPDF'])->name('download_pdf');
+    Route::post('laporan/download', [LaporanController::class, 'downloadPDF'])->name('download_pdf');   
+    Route::get('/historis', [PrediksiHistorisController::class, 'index'])->name('historis');
 });
