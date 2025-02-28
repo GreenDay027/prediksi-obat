@@ -31,7 +31,6 @@ class LaporanController extends Controller
             $query->where('nama_obat', $request->nama_obat);
         }
 
-        // Ambil data dan kelompokkan berdasarkan nama obat
         $prediksis = $query->get()->groupBy('nama_obat');
         
         return view('laporan.index', compact('prediksis', 'years', 'namaObats'));
