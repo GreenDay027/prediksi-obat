@@ -42,7 +42,7 @@
                 </div>
                 <div class="dash-widgetcontent">
                     <h5><span class="counters" data-count="{{ $dataPrediksiCount }} ">{{ $dataPrediksiCount }} </span></h5>
-                    <h6>Total Data Obat Prediksi</h6>
+                    <h6>Total Data Prediksi</h6>
                 </div>
             </div>
         </div>

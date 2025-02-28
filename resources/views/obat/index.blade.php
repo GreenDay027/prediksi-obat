@@ -1,6 +1,17 @@
 @extends('layouts.admin')
 @section('content')
 <div class="container">
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="obat-tab" data-bs-toggle="tab" data-bs-target="#obat" type="button" role="tab" aria-controls="obat" aria-selected="true">Data Obat</button>
@@ -17,9 +28,12 @@
         <div class="tab-pane fade show active" id="obat" role="tabpanel" aria-labelledby="obat-tab">
             <div class="d-flex gap-2 mt-3">
                 <h4>Data Obat</h4>
+                @if (Auth::user()->name == 'Admin')
+                    
                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahDataObat">
                     <i class="fas fa-plus"></i> Tambah
                 </button>
+                @endif
             </div>
             <div class="card shadow border-0 mt-3">
                 <div class="card-body">
@@ -34,7 +48,10 @@
                                 <th>Stok Masuk</th>
                                 <th>Stok Keluar</th>
                                 <th>Sisa</th>
+                                @if (Auth::user()->name == 'Admin')
+                    
                                 <th>Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -48,6 +65,8 @@
                                 <td>{{ $obat->stok_masuk }}</td>
                                 <td>{{ $obat->stok_keluar }}</td>
                                 <td>{{ $obat->sisa }}</td>
+                                @if (Auth::user()->name == 'Admin')
+                    
                                 <td>
                                     <div class="d-flex gap-1">
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditDataObat{{ $obat->id }}"><i class="fas fa-edit"></i></button>
@@ -59,6 +78,7 @@
                                         </form>
                                     </div>
                                 </td>
+                                @endif
                             </tr>
         
                             <!-- Modal Edit Data Obat -->
@@ -79,9 +99,16 @@
                                                     <input type="text" class="form-control" id="nama_obat" name="nama_obat" value="{{ $obat->nama_obat }}">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="jenis" class="form-label">Jenis</label>
-                                                    <input type="text" class="form-control" id="jenis" name="jenis" value="{{ $obat->jenis }}">
+                                                    <label for="jenis" class="form-label">Kategori</label>
+                                                    <select class="form-control" id="jenis" name="jenis">
+                                                        <option value="kolesterol" {{ $obat->jenis == 'kolesterol' ? 'selected' : '' }}>Kolesterol</option>
+                                                        <option value="sariawan" {{ $obat->jenis == 'sariawan' ? 'selected' : '' }}>Sariawan</option>
+                                                        <option value="vitamin" {{ $obat->jenis == 'vitamin' ? 'selected' : '' }}>Vitamin</option>
+                                                        <option value="paracetamol" {{ $obat->jenis == 'paracetamol' ? 'selected' : '' }}>Paracetamol</option>
+                                                        <option value="batuk" {{ $obat->jenis == 'batuk' ? 'selected' : '' }}>Batuk</option>
+                                                    </select>
                                                 </div>
+                                                
                                                 <div class="mb-3">
                                                     <label for="kadaluarsa" class="form-label">kadaluarsa</label>
                                                     <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa" value="{{ $obat->jenis }}">
@@ -128,9 +155,16 @@
                                     <input type="text" class="form-control" id="nama_obat" name="nama_obat">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="jenis" class="form-label">Jenis</label>
-                                    <input type="text" class="form-control" id="jenis" name="jenis">
+                                    <label for="jenis" class="form-label">Kategori</label>
+                                    <select class="form-control" id="jenis" name="jenis">
+                                        <option value="kolesterol">Kolesterol</option>
+                                        <option value="sariawan">Sariawan</option>
+                                        <option value="vitamin">Vitamin</option>
+                                        <option value="paracetamol">Paracetamol</option>
+                                        <option value="batuk">Batuk</option>
+                                    </select>
                                 </div>
+                                
                                 <div class="mb-3">
                                     <label for="kadaluarsa" class="form-label">kadaluarsa</label>
                                     <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa">
@@ -160,9 +194,12 @@
         <div class="tab-pane fade" id="obat-masuk" role="tabpanel" aria-labelledby="obat-masuk-tab">
             <div class="d-flex gap-2 mt-3">
                 <h4>Obat Masuk</h4>
+                @if (Auth::user()->name == 'Admin')
+                    
                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahObatMasuk">
                     <i class="fas fa-plus"></i> Tambah
                 </button>
+                @endif
             </div>
                 <div class="card shadow border-0 mt-3">
                      <div class="card-body">
@@ -172,9 +209,13 @@
                                 <th>ID</th>
                                 <th>Nama Obat</th>
                                 <th>Kadaluarsa</th>
-                                <th>Jumlah</th>
+                                <th>Stok awal</th>
+                                <th>Stok Masuk</th>
                                 <th>Tanggal</th>
+                                @if (Auth::user()->name == 'Admin')
+                    
                                 <th>Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -183,8 +224,11 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $obatMasuk->dataObat->nama_obat }}</td>
                                 <td>{{ $obatMasuk->kadaluarsa }}</td>
+                                <td>{{$obatMasuk->start}}</td>
                                 <td>{{ $obatMasuk->jumlah }}</td>
                                 <td>{{ $obatMasuk->tanggal }}</td>
+                                @if (Auth::user()->name == 'Admin')
+                    
                                 <td>
                                     <div class="d-flex gap-1">
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditObatMasuk{{ $obatMasuk->id }}"><i class="fas fa-edit"></i></button>
@@ -196,6 +240,7 @@
                                         </form>
                                     </div>
                                 </td>
+                                @endif
                             </tr>
         
                             <!-- Modal Edit Obat Masuk -->
@@ -214,14 +259,19 @@
                                                 <div class="mb-3">
                                                     <label for="data_obat_id" class="form-label">Nama Obat</label>
                                                         <label for="data_obat_id" class="form-label">Nama Obat</label>
-                                                        <input type="text" class="form-control" readonly name="data_obat_id" id="" value="{{ $obat->nama_obat}}">
+                                                        <input type="text" class="form-control" readonly id="" value="{{  $obatMasuk->dataObat->nama_obat }}">
+                                                        <input type="hidden" class="form-control" readonly name="data_obat_id" id="" value="{{ $obatMasuk->dataObat->id}}">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="kadaluarsa" class="form-label">kadaluarsa</label>
                                                     <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa" value="{{ $obat->jenis }}">
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="jumlah" class="form-label">Jumlah</label>
+                                                    <label for="start" class="form-label">stok awal</label>
+                                                    <input type="number" class="form-control" id="start" name="start" value="{{ $obatMasuk->start }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="jumlah" class="form-label">Stok Masuk</label>
                                                     <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ $obatMasuk->jumlah }}">
                                                 </div>
                                                 <div class="mb-3">
@@ -237,7 +287,6 @@
                             @endforeach
                         </tbody>
                     </table>
-
                 </div>
                 </div>
             <!-- Modal Tambah Obat Masuk -->
@@ -265,7 +314,11 @@
                                     <input type="date" class="form-control" id="kadaluarsa" name="kadaluarsa">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="jumlah" class="form-label">Jumlah</label>
+                                    <label for="jumlah" class="form-label">Stok awal</label>
+                                    <input type="number" class="form-control" id="start" name="start">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="jumlah" class="form-label">Stok Masuk</label>
                                     <input type="number" class="form-control" id="jumlah" name="jumlah">
                                 </div>
                                 <div class="mb-3">
@@ -284,9 +337,12 @@
         <div class="tab-pane fade" id="obat-keluar" role="tabpanel" aria-labelledby="obat-keluar-tab">
             <div class="d-flex gap-2 mt-3">
                 <h4>Obat Keluar</h4>
+                @if (Auth::user()->name == 'Admin')
+                    
                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahObatKeluar">
                     <i class="fas fa-plus"></i> Tambah
                 </button>
+                @endif
             </div>
            <div class="card shadow border-0 mt-3">
             <div class="card-body">
@@ -295,9 +351,12 @@
                         <tr>
                             <th>ID</th>
                             <th>Nama Obat</th>
-                            <th>Jumlah</th>
+                            <th>Stok Keluar</th>
                             <th>Tanggal</th>
+                            @if (Auth::user()->name == 'Admin')
+                    
                             <th>Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -307,16 +366,19 @@
                             <td>{{ $obatKeluar->dataObat->nama_obat }}</td>
                             <td>{{ $obatKeluar->jumlah }}</td>
                             <td>{{ $obatKeluar->tanggal }}</td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditObatKeluar{{ $obatKeluar->id }}"><i class="fas fa-edit"></i></button>
-                                    <form action="{{ route('obat.destroy', $obatKeluar->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <input type="hidden" name="jenis_form" value="obat_keluar">
-                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                </div>
+                            @if (Auth::user()->name == 'Admin')
+                    
+                        <td>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditObatKeluar{{ $obatKeluar->id }}"><i class="fas fa-edit"></i></button>
+                                <form action="{{ route('obat.destroy', $obatKeluar->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="jenis_form" value="obat_keluar">
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </div>
+                            @endif
                             </td>
                         </tr>
     
@@ -335,10 +397,11 @@
                                             <input type="hidden" name="jenis_form" value="obat_keluar">
                                             <div class="mb-3">
                                                 <label for="data_obat_id" class="form-label">Nama Obat</label>
-                                                <input type="text" class="form-control" readonly name="data_obat_id" id="" value="{{ $obat->nama_obat}}">
+                                                <input type="text" class="form-control" readonly id="" value="{{ $obatKeluar->dataObat->nama_obat}}">
+                                                <input type="hidden" class="form-control" readonly name="data_obat_id" id="" value="{{ $obatKeluar->dataObat->id}}">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="jumlah" class="form-label">Jumlah</label>
+                                                <label for="jumlah" class="form-label">Stok Keluar</label>
                                                 <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ $obatKeluar->jumlah }}">
                                             </div>
                                             <div class="mb-3">
@@ -373,12 +436,12 @@
                                     <label for="data_obat_id" class="form-label">Nama Obat</label>
                                     <select class="form-control" id="data_obat_id" name="data_obat_id">
                                         @foreach($dataObat as $obat)
-                                            <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
+                                            <option value="{{ $obat->id }}">{{ $obat->nama_obat }} - Stok: {{$obat->sisa }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="jumlah" class="form-label">Jumlah</label>
+                                    <label for="jumlah" class="form-label">Stok Keluar</label>
                                     <input type="number" class="form-control" id="jumlah" name="jumlah">
                                 </div>
                                 <div class="mb-3">

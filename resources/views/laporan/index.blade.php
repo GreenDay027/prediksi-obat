@@ -35,6 +35,17 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="alert alert-warning" role="alert">
+                        <span class=" fw-semibold">
+                           - Warna <span class="text-primary bold">
+                            biru</span> menandakan stok awal
+                        </span>
+                        <br>
+                        <span class=" fw-semibold">
+                           - Warna <span class="text-success bold">
+                            Hijau</span> adalah hasil prediksi
+                        </span>
+                    </div>
                     <table class="table mt-3" id="myTable">
                         <thead>
                             <tr>
@@ -55,22 +66,24 @@
                                         <td>{{ $namaObat }}</td>
                                         <td>{{ $year }}</td>
                                         @for ($month = 1; $month <= 12; $month++)
-                                            <td>
-                                                @php
-                                                    $found = false;
-                                                    foreach ($prediksiObat as $prediksi) {
-                                                        if (\Carbon\Carbon::createFromFormat('M-Y', $prediksi->bulan_tahun)->format('Y') == $year &&
-                                                            \Carbon\Carbon::createFromFormat('M-Y', $prediksi->bulan_tahun)->format('m') == str_pad($month, 2, '0', STR_PAD_LEFT)) {
-                                                            echo $prediksi->hasil_prediksi;
-                                                            $found = true;
-                                                            break;
-                                                        }
+                                            @php
+                                                $found = false;
+                                                foreach ($prediksiObat as $prediksi) {
+                                                    if (\Carbon\Carbon::createFromFormat('M-Y', $prediksi->bulan_tahun)->format('Y') == $year &&
+                                                        \Carbon\Carbon::createFromFormat('M-Y', $prediksi->bulan_tahun)->format('m') == str_pad($month, 2, '0', STR_PAD_LEFT)) {
+                                                        $value = $prediksi->hasil_prediksi;
+                                                        $keterangan = $prediksi->keterangan;
+                                                        $class = ($keterangan === 'prediksi') ? 'bg-success text-white' : 'bg-primary text-white';
+                                                        $found = true;
+                                                        break;
                                                     }
-                                                    if (!$found) {
-                                                        echo '-';
-                                                    }
-                                                @endphp
-                                            </td>
+                                                }
+                                                if (!$found) {
+                                                    $value = '-';
+                                                    $class = '';
+                                                }
+                                            @endphp
+                                            <td class="{{ $class }}">{{ $value }}</td>
                                         @endfor
                                     </tr>
                                 @endforeach

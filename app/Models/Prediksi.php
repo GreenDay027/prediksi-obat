@@ -13,7 +13,8 @@ class Prediksi extends Model
     protected $fillable = [
         'nama_obat',
         'bulan_tahun',
-        'hasil_prediksi'
+        'hasil_prediksi',
+        'keterangan'
     ];
 
     public function dataObat()

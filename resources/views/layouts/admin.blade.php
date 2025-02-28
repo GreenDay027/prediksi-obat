@@ -28,6 +28,7 @@
 
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 </head>
 
@@ -126,9 +127,12 @@
                         <li class="{{ Request::is('obat*') ? 'active' : '' }}">
                             <a href="{{ route('obat.index') }}"><img src="{{ asset('assets/img/icons/product.svg') }}" alt="img"><span>Kelola Data Obat</span></a>
                         </li>
+                        @if (Auth::user()->name == 'Admin')
+                    
                         <li class="{{ Request::is('prediksi*') ? 'active' : '' }}">
                             <a href="{{ route('prediksi.index') }}"><img src="{{ asset('assets/img/icons/scanners.svg') }}" alt="img"><span>Data Prediksi</span></a>
                         </li>
+                        @endif
                         <li class="{{ Request::is('laporan') ? 'active' : '' }}">
                             <a href="{{ route('laporan') }}"><img src="{{ asset('assets/img/icons/transcation.svg') }}" alt="img"><span>Laporan</span></a>
                         </li>

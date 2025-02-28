@@ -12,7 +12,7 @@ class ObatMasuk extends Model
     protected $table = "obat_masuk";
 
     protected $fillable = [
-        'data_obat_id', 'jumlah', 'tanggal', 'kadaluarsa'
+        'data_obat_id', 'jumlah', 'tanggal', 'kadaluarsa','start'
     ];
 
     public function dataObat()
